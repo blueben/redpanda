@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Configuration file
+# Expects one git directory per line
+config="$HOME/.gitsync"
+
+red='\E[0;31m'
+green='\E[0;32m'
+bold='\E[1m'
+blink='\E[5m'
+reset='\E(B\E[m'
+result_cursor='\E[80D'
+
+# Git action function
+git_action() {
+  action=$1
+  remote=$2
+  dir=$3
+
+  echo -ne "\t\t${bold}$dir${reset}${result_cursor}"
+  case $action in
+    stat)
+      result=`git status 2>&1`
+      ;;
+    pull)
+      result=`git pull --all 2>&1`
+      ;;
+    push)
+      result=`git push --all $remote 2>&1`
+      ;;
+    *)
+      echo -ne "${red}Error${reset}\n\n"
+      echo -ne "Invalid git action $action\n\n"
+      return 1
+      ;;
+  esac
+
+  if [ $? = 0 ]; then
+    echo -ne "${green}$action $remote${reset}\n"
+  else
+    echo -ne "${red}$action $remote${reset}\n\n"
+    echo -ne "$result\n\n"
+  fi
+  return $?
+}
+
+# Load the config into an array
+while read -r line
+do
+  conf=("${conf[@]}" "$line")
+done < $config
+
+echo -ne "\nSynchronizing git repositories\n\n"
+
+for each in ${conf[@]}; do
+  # Get the directory of the repository
+  IFS=';' read -r -a repo <<< "$each"
+  dir=${repo[0]}
+  remotes=${repo[@]:1:${#repo[@]}}
+
+  cd $dir
+  git_action stat all $dir
+  if [ $? = 0 ]; then
+    git_action pull all $dir
+    for remote in ${remotes[@]}; do
+      git_action push $remote $dir
+    done
+  fi
+done
+
+echo -ne "\nSynchronization complete\n"
