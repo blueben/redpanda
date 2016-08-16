@@ -1,0 +1,254 @@
+##
+# Chef Omnibus
+
+apt-get install curl
+
+curl -L https://www.chef.io/chef/install.sh | sudo bash
+
+##
+# Add Repositories
+
+# Percona
+apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
+apt-add-repository -s http://repo.percona.com/apt
+apt-get update
+
+# ZFS
+apt-add-repository ppa:zfs-native/stable
+apt-get update
+
+##
+# ZFS Setup
+
+apt-get install ubuntu-zfs
+modprobe zfs
+
+echo "options zfs zfs_arc_max=2147483648" >> /etc/modprobe.d/zfs.conf
+
+zpool create zdata sdX
+zfs set atime=off zdata
+zfs set relatime=on zdata
+zfs set compression=on zdata
+
+zfs create zdata/home
+  zfs set mountpoint=/home zdata/home
+
+zfs create zdata/opt
+	zfs set compression=gzip-9 zdata/opt
+  zfs set mountpoint=/opt zdata/opt
+
+zfs create zdata/var
+	zfs set compression=gzip-9 zdata/var
+  zfs set mountpoint=/var zdata/var
+
+zfs create zdata/srv
+  zfs set mountpoint=/data zdata/srv
+
+##
+# Unwanted Packages
+
+canonical-census
+unity-lens-shopping
+unity-scope-video-remote
+unity-scope-musicstores
+popularity-contest
+ntpdate
+
+##
+# Language packages
+
+golang
+python2.7
+nodejs
+npm
+default-jdk
+
+##
+# Ruby special snowflake
+
+chruby
+Ruby 1.9
+Ruby 2.x
+
+##
+# Network packages
+
+curl
+tmux
+mosh
+git
+iperf
+percona-toolkit
+openssh-server
+ntp
+
+##
+# Utility packages
+
+dos2unix
+p7zip-full
+secure-delete
+bonnie++
+iozone3
+pv
+s3cmd
+bzip2
+vim
+gnome-tweak-tool
+gparted
+zsh
+lsof
+brightside
+
+##
+# Security packages
+
+gnupg2
+gnupg-agent
+nmap
+ndiff
+pbnj
+p0f
+mat
+wireshark
+auditd
+clamav
+horst
+kismet
+arpwatch
+samhain
+suricata
+netsniff-ng
+scapy
+
+##
+# Comms packages
+
+# Bluetooth Phone
+gnokii
+
+# Email
+abook
+mutt
+notmuch
+notmuch-mutt
+offlineimap
+
+# IM
+pidgin
+pidgin-otr
+pidgin-openpgp
+
+##
+# Misc packages
+
+r-recommended
+vlc
+x264
+cowsay
+grive
+elinks
+w3m
+sadms
+
+##
+# Other Apps
+
+Google Chrome
+Dropbox
+Box
+Pandora One
+Adobe Flash
+Something Jabber
+Something Twitter
+Something Calendar
+Softoken
+
+##
+# Additional package repos
+
+# Everpad
+https://github.com/nvbn/everpad/wiki/how-to-install
+
+# Geeknote
+http://www.geeknote.me/install/
+
+# Google Chrome
+https://www.google.com/chrome/browser/desktop/
+
+# Ubuntu Tweak
+http://ubuntu-tweak.com/ 
+
+# XMind
+http://www.xmind.net/download/linux/
+
+##
+# Other Security
+
+Leopard Flower (lpfw)
+Grsecurity
+Cookie Cadger
+Google Authenticator SSH
+
+##
+# Environment Customization
+
+.aws/*
+.chef/*
+.git/*
+.gitconfig
+.gnupg
+.mailcap
+.mutt/*
+.muttrc
+.notmuch-config
+.offlineimap/*
+.offlineimaprc
+.oh-my-zsh
+.pki
+.s3cfg
+.ssh/*
+.tmux.conf
+.vim/*
+.vimrc
+.weechat/*
+.zshenv
+.zshrc
+
+##
+# User Configuration
+
+Maildir
+Dropbox
+Google Drive
+Pandora One
+Google Chrome
+Jabber
+Desktop Toolbar
+Desktop background
+Turn Caps Lock into CTRL
+
+##
+# System Configuration
+
+openvpn-client
+SSH
+iptables
+ntp
+auditd
+clamav
+horst
+arpwatch
+samhain
+suricata
+apparmor
+
+##
+# References
+
+https://stribika.github.io/2015/01/04/secure-secure-shell.html
+https://fixubuntu.com
+https://www.whonix.org/
+https://wiki.ubuntu.com/ZFS
+http://fibrevillage.com/storage/169-zfs-arc-on-linux-how-to-set-and-monitor-on-linux
+http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCI_unixparms#GCI_unixparms_disk

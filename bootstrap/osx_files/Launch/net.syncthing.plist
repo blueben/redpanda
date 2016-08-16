@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+
+		<key>Label</key>
+		<string>se.nym.syncthing</string>
+
+		<key>Program</key>
+		<string>/Users/benjamink/.bin/syncthing</string>
+
+		<key>ProgramArguments</key>
+		<array>
+			<string>/Users/benjamink/.bin/syncthing</string>
+			<string>-audit</string>
+			<string>-no-browser</string>
+		</array>
+
+		<key>EnvironmentVariables</key>
+		<dict>
+			<key>HOME</key>
+			<string>/Users/benjamink</string>
+			<key>STNORESTART</key>
+			<string>1</string>
+		</dict>
+
+		<key>KeepAlive</key>
+	  <true/>
+
+		<key>ProcessType</key>
+		<string>Background</string>
+
+		<key>StandardOutPath</key>
+		<string>/Users/benjamink/.log/syncthing</string>
+
+		<key>StandardErrorPath</key>
+		<string>/Users/benjamink/.log/syncthing.err</string>
+
+	</dict>
+</plist>

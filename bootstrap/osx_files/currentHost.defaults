@@ -1,0 +1,44 @@
+{
+    "com.apple.ColorSync.Devices" =     {
+        "Device.mntr.46FA2088-5175-1712-04A4-8183272CF248" =         {
+            CustomProfiles =             {
+                1 = "/Library/ColorSync/Profiles/Displays/Color LCD-46FA2088-5175-1712-04A4-8183272CF248.icc";
+            };
+        };
+    };
+    "com.apple.keyboard.modifiermapping.0-0-0" =     (
+                {
+            HIDKeyboardModifierMappingDst = 2;
+            HIDKeyboardModifierMappingSrc = 0;
+        }
+    );
+    "com.apple.keyboard.modifiermapping.1452-628-0" =     (
+                {
+            HIDKeyboardModifierMappingDst = 2;
+            HIDKeyboardModifierMappingSrc = 0;
+        }
+    );
+    "com.apple.keyboard.modifiermapping.6940-6921-0" =     (
+                {
+            HIDKeyboardModifierMappingDst = 2;
+            HIDKeyboardModifierMappingSrc = 0;
+        }
+    );
+    "com.apple.mouse.tapBehavior" = 1;
+    "com.apple.trackpad.enableSecondaryClick" = 1;
+    "com.apple.trackpad.fiveFingerPinchSwipeGesture" = 2;
+    "com.apple.trackpad.fourFingerHorizSwipeGesture" = 2;
+    "com.apple.trackpad.fourFingerPinchSwipeGesture" = 2;
+    "com.apple.trackpad.fourFingerVertSwipeGesture" = 2;
+    "com.apple.trackpad.momentumScroll" = 1;
+    "com.apple.trackpad.pinchGesture" = 1;
+    "com.apple.trackpad.rotateGesture" = 1;
+    "com.apple.trackpad.scrollBehavior" = 2;
+    "com.apple.trackpad.threeFingerDragGesture" = 0;
+    "com.apple.trackpad.threeFingerHorizSwipeGesture" = 2;
+    "com.apple.trackpad.threeFingerTapGesture" = 0;
+    "com.apple.trackpad.threeFingerVertSwipeGesture" = 2;
+    "com.apple.trackpad.twoFingerDoubleTapGesture" = 1;
+    "com.apple.trackpad.twoFingerFromRightEdgeSwipeGesture" = 3;
+    "com.apple.trackpad.version" = 5;
+}

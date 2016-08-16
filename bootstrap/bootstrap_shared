@@ -1,0 +1,35 @@
+# Atom packages
+minimap
+script
+hard-wrap
+rest-client
+git
+ssh-config
+language-chef
+language-powershell
+language-html
+autocomplete-html
+autocomplete-paths
+atom-autocomplete-php
+autocomplete-python
+linter
+linter-foodcritic
+linter-markdown (depends: npm mdast-lint)
+linter-php
+linter-golinter
+linter-js-standard
+linter-puppet-lint
+linter-pylint
+linter-ruby
+linter-shellcheck
+linter-tidy
+linter-jsonlint
+linter-js-yaml
+linter-gcc
+linter-erb
+rspec
+phpunit
+ruby-test
+
+# Software
+Vagrant
