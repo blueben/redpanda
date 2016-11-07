@@ -1,24 +1,24 @@
 # System Config
 
-sudo nvram boot-args="-v keepsyms=1"
+#sudo nvram boot-args="-v keepsyms=1"
 
 ##
 # Install XCode
 
-sudo xcode-select --install
-sudo xcodebuild -license accept
+#sudo xcode-select --install
+#sudo xcodebuild -license accept
 
 # Install Homebrew
 
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew update
+#/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#brew update
 
 # Install Brews
 
-srm (secure-delete)
-pbnj
-netsniff-ng
-r
+#srm (secure-delete)
+#pbnj
+#netsniff-ng
+#r
 
 
 brew=(mackup)
@@ -59,9 +59,15 @@ brew+=(abook)
 brew+=(offlineimap)
 brew+=(r)
 brew+=(r-gui)
+brew+=(chrome-cli)
+brew+=(packer)
+brew+=(terraform)
+brew+=(vagrant)
+brew+=(vault)
+brew+=(consul)
 
 brew install parallel
-parallel --eta -k install ::: ${brew[@]}
+parallel --eta -k -j1 brew install ::: ${brew[@]}
 
 brew linkapps r-gui
 
@@ -82,7 +88,6 @@ casks+=(google-drive)
 casks+=(google-earth)
 casks+=(google-earth-web-plugin)
 casks+=(google-cloud-sdk)
-casks+=(chrome-cli)
 casks+=(firefox)
 casks+=(lastpass)
 casks+=(chefdk)
@@ -97,8 +102,6 @@ casks+=(franz)
 casks+=(rescuetime)
 casks+=(vagrant)
 casks+=(vagrant-manager)
-casks+=(packer)
-casks+=(terraform)
 casks+=(virtualbox)
 casks+=(virtualbox-extension-pack)
 casks+=(gopro)
@@ -134,10 +137,10 @@ casks+=(xmind)
 casks+=(rstudio)
 casks+=(macports)
 
-parallel --eta -k cask install ::: ${casks[@]}
+parallel --eta -k -j1 brew cask install ::: ${casks[@]}
 
 # Macports
-sudo port install pylint
+#sudo port install pylint
 
 # AntiVirus
 
@@ -162,8 +165,9 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo Hos
 ###############################################################################
 
 # Trackpad: enable tap to click for this user and for the login screen
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write com.apple.driver.AppleMultitouchTrackpad Clicking -int 1
+GlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 # Increase sound quality for Bluetooth headphones/headsets
@@ -177,7 +181,7 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Screen
 ###############################################################################
 
-# Save screenshots to the desktop
+# Save screenshots
 mkdir $HOME/Pictures/Screenshots
 defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
 
@@ -204,7 +208,7 @@ defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
 
 # Finder: show hidden files by default
-#defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder AppleShowAllFiles -bool true
 
 # Finder: show all filename extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
@@ -254,6 +258,10 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 # TODO
 
 # Capslock to Control
+
+# ioreg -n IOHIDKeyboard -r | grep -e 'class IOHIDKeyboard' -e VendorID\" -e Product
+
+# defaults -currentHost write -g com.apple.keyboard.modifiermapping.1452-682-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>-1</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
 
 # Firewall rules
 
