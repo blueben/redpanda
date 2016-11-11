@@ -50,6 +50,7 @@ brew+=(git)
 brew+=(iperf3)
 brew+=(bonnie++)
 brew+=(iozone)
+brew+=(fio)
 brew+=(ndiff)
 brew+=(p0f)
 brew+=(mat)
@@ -65,6 +66,9 @@ brew+=(terraform)
 brew+=(vagrant)
 brew+=(vault)
 brew+=(consul)
+brew+=(fio)
+brew+=(socat)
+brew+=(netcat)
 
 brew install parallel
 parallel --eta -k -j1 brew install ::: ${brew[@]}
