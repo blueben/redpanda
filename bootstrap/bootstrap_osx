@@ -21,7 +21,7 @@
 #r
 
 
-brew=(mackup)
+brew+=(mackup)
 brew+=(m-cli)
 brew+=(checkbashisms)
 brew+=(chruby)
@@ -32,6 +32,9 @@ brew+=(dos2unix)
 brew+=(ansible)
 brew+=(p7zip)
 brew+=(bzip2)
+brew+=(pigz)
+brew+=(lbzip2)
+brew+=(plzip)
 brew+=(mosh)
 brew+=(mtr)
 brew+=(nmap)
