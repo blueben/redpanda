@@ -72,6 +72,7 @@ brew+=(consul)
 brew+=(fio)
 brew+=(socat)
 brew+=(netcat)
+brew+=(lldpd)
 
 brew install parallel
 parallel --eta -k -j1 brew install ::: ${brew[@]}
