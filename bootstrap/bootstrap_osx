@@ -111,11 +111,19 @@ brew update
 #netsniff-ng
 #r
 
+brew+=(coreutils)
+brew+=(findutils)
+brew+=(bash)
+brew+=(gnu-tar)
+brew+=(pcre)
+brew+=(git)
 brew+=(mackup)
 brew+=(m-cli)
 brew+=(checkbashisms)
 brew+=(chruby)
 brew+=(ruby-install)
+brew+=(python)
+brew+=(node)
 brew+=(tmux)
 brew+=(xz)
 brew+=(dos2unix)
@@ -168,6 +176,9 @@ brew install parallel
 parallel --eta -k -j1 brew install ::: ${brew[@]}
 
 brew linkapps r-gui
+
+brew tap homebrew/dupes
+brew install homebrew/dupes/grep
 
 ###############################################################################
 # Install Homebrew Cask
