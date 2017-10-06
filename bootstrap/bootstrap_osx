@@ -15,20 +15,20 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ###############################################################################
 # Base Config
 
-nvram boot-args="-v keepsyms=1"
+#nvram boot-args="-v keepsyms=1"
 
 # Enable the MacBook Air SuperDrive on any Mac
-sudo nvram boot-args="mbasd=1"
+#sudo nvram boot-args="mbasd=1"
 
 # Set computer name (as done via System Preferences → Sharing)
-HOSTNAME="foobar"
-scutil --set ComputerName "${HOSTNAME}"
-scutil --set HostName "${HOSTNAME}"
-scutil --set LocalHostName "${HOSTNAME}"
-defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${HOSTNAME}"
+#HOSTNAME="foobar"
+#scutil --set ComputerName "${HOSTNAME}"
+#scutil --set HostName "${HOSTNAME}"
+#scutil --set LocalHostName "${HOSTNAME}"
+#defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${HOSTNAME}"
 
 # Set the timezone; see `sudo systemsetup -listtimezones` for other values
-systemsetup -settimezone "America/Los_Angeles" > /dev/null
+#systemsetup -settimezone "America/Los_Angeles" > /dev/null
 
 ###############################################################################
 # UI/UX
@@ -87,9 +87,9 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 ###############################################################################
 # Full Disk Encryption
 
-fdesetup enable -defer $HOME/FileVaultRecovery.plist
+#fdesetup enable -defer $HOME/FileVaultRecovery.plist
 
-defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool YES
+#defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool YES
 
 ###############################################################################
 # Install XCode
@@ -127,7 +127,7 @@ brew+=(node)
 brew+=(tmux)
 brew+=(xz)
 brew+=(dos2unix)
-brew+=(ansible)
+#brew+=(ansible)
 brew+=(p7zip)
 brew+=(bzip2)
 brew+=(pigz)
@@ -155,7 +155,7 @@ brew+=(fio)
 brew+=(ndiff)
 brew+=(p0f)
 brew+=(mat)
-brew+=(clamav)
+#brew+=(clamav)
 brew+=(scapy)
 brew+=(abook)
 brew+=(offlineimap)
@@ -171,6 +171,7 @@ brew+=(fio)
 brew+=(socat)
 brew+=(netcat)
 brew+=(lldpd)
+brew+=(sshfs)
 
 brew install parallel
 parallel --eta -k -j1 brew install ::: ${brew[@]}
@@ -183,8 +184,7 @@ brew install homebrew/dupes/grep
 ###############################################################################
 # Install Homebrew Cask
 
-brew tap phinze/homebrew-cask
-brew install brew-cask
+brew tap caskroom/cask
 
 ###############################################################################
 # Install Casks
@@ -194,59 +194,58 @@ casks+=(xquartz)
 casks+=(wireshark)
 casks+=(caffeine)
 casks+=(iterm2)
-casks+=(google-chrome)
-casks+=(google-drive)
-casks+=(google-earth)
-casks+=(google-earth-web-plugin)
-casks+=(google-cloud-sdk)
+#casks+=(google-chrome)
+#casks+=(google-drive)
+#casks+=(google-earth)
+#casks+=(google-earth-web-plugin)
+#casks+=(google-cloud-sdk)
 casks+=(firefox)
 casks+=(lastpass)
 casks+=(chefdk)
 casks+=(adobe-air)
-casks+=(adobe-reader)
+#casks+=(adobe-reader)
 casks+=(pandora)
 casks+=(evernote)
 casks+=(skitch)
-casks+=(dropbox)
+#casks+=(dropbox)
 casks+=(night-owl)
-casks+=(franz)
+#casks+=(franz)
 casks+=(rescuetime)
 casks+=(vagrant)
 casks+=(vagrant-manager)
 casks+=(virtualbox)
 casks+=(virtualbox-extension-pack)
-casks+=(gopro)
-casks+=(gopro-studio)
-casks+=(transmission)
-casks+=(tunnelblick)
-casks+=(android-file-transfer)
-casks+=(android-studio)
-casks+=(arduino)
+#casks+=(gopro)
+#casks+=(gopro-studio)
+#casks+=(transmission)
+#casks+=(tunnelblick)
+#casks+=(android-file-transfer)
+#casks+=(android-studio)
+#casks+=(arduino)
 casks+=(baudline)
 casks+=(osxfuse)
 casks+=(vlc)
 casks+=(atom)
-casks+=(crashplan)
+#casks+=(crashplan)
 casks+=(docker)
-casks+=(steam)
+#casks+=(steam)
 casks+=(sizeup)
 casks+=(keybase)
 casks+=(logitech-control-center)
 casks+=(gpgtools)
-casks+=(reaper)
-casks+=(audacity)
-casks+=(blender)
-casks+=(inkscape)
-casks+=(fldigi)
+#casks+=(reaper)
+#casks+=(audacity)
+#casks+=(blender)
+#casks+=(inkscape)
+#casks+=(fldigi)
 casks+=(dash)
-casks+=(openzfs)
+#casks+=(openzfs)
 casks+=(launchcontrol)
-casks+=(sketchup)
-casks+=(sshfs)
-casks+=(torbrowser)
+#casks+=(sketchup)
+#casks+=(torbrowser)
 casks+=(xmind)
 casks+=(rstudio)
-casks+=(macports)
+#casks+=(macports)
 
 parallel --eta -k -j1 brew cask install ::: ${casks[@]}
 
@@ -264,9 +263,9 @@ parallel --eta -k -j1 brew cask install ::: ${casks[@]}
 m dock autohide YES
 m firewall enable
 m ntp set time-nw.nist.gov
-m network location create home
-m network location create office
-m network location switch office
+#m network location create home
+#m network location create office
+#m network location switch office
 m screensaver askforpassword YES
 
 # Reveal IP address, hostname, OS version, etc. when clicking the clock
@@ -403,7 +402,7 @@ defaults write com.apple.dock wvous-bl-modifier -int 0
 defaults write com.apple.dock mru-spaces -bool false
 
 # Remove the auto-hiding Dock delay
-defaults write com.apple.dock autohide-delay -float 10
+defaults write com.apple.dock autohide-delay -float 0.1
 # Remove the animation when hiding/showing the Dock
 #defaults write com.apple.dock autohide-time-modifier -float 0
 
@@ -694,26 +693,26 @@ defaults write ~/Library/Preferences/org.gpgtools.gpgmail SignNewEmailsByDefault
 ###############################################################################
 
 # Use `~/Documents/Torrents` to store incomplete downloads
-defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Documents/Torrents"
+#defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
+#defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Documents/Torrents"
 
 # Don’t prompt for confirmation before downloading
-defaults write org.m0k.transmission DownloadAsk -bool false
-defaults write org.m0k.transmission MagnetOpenAsk -bool false
+#defaults write org.m0k.transmission DownloadAsk -bool false
+#defaults write org.m0k.transmission MagnetOpenAsk -bool false
 
 # Trash original torrent files
-defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
+#defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
 
 # Hide the donate message
-defaults write org.m0k.transmission WarningDonate -bool false
+#defaults write org.m0k.transmission WarningDonate -bool false
 # Hide the legal disclaimer
-defaults write org.m0k.transmission WarningLegal -bool false
+#defaults write org.m0k.transmission WarningLegal -bool false
 
 # IP block list.
 # Source: https://giuliomac.wordpress.com/2014/02/19/best-blocklist-for-transmission/
-defaults write org.m0k.transmission BlocklistNew -bool true
-defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
-defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
+#defaults write org.m0k.transmission BlocklistNew -bool true
+#defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
+#defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
 
 ###############################################################################
 # Spectacle.app                                                               #
