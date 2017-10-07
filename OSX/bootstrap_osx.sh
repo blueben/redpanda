@@ -16,7 +16,7 @@ cp pictures/* $HOME/Pictures/
 
 # Set up blurred screensaver
 mkdir -p $HOME/{screensaver}
-cp scripts/blurcap.sh $HOME/.bin/
+cp OSX/scripts/blurcap.sh $HOME/.bin/
 crontab -l | { cat; echo "* * * * * $HOME/.bin/blurcap.sh"; } | crontab -
 
 # ~/.macos — https://mths.be/macos
