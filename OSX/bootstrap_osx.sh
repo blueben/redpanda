@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
 # Useful directories
-mkdir $HOME/{.bin,src,Projects}
+mkdir -p $HOME/{.bin,src}
+
+mkdir -p $HOME/Projects/Video-Template/Assets/{Audio,Stills,Video}
+mkdir -p $HOME/Projects/Video-Template/Notes/
+mkdir -p $HOME/Projects/Video-Template/Renders/{0_Trimmed,1_Defished,Final_HiRes,Final_LoRes}
+
+mkdir -p $HOME/Projects/Audio-Template/Assets/{Audio,Pictures}
+mkdir -p $HOME/Projects/Audio-Template/Notes/
+mkdir -p $HOME/Projects/Audio-Template/Renders/{Masters,Stems}
 
 # Copy my avatars to Pictures
 cp pictures/* $HOME/Pictures/
