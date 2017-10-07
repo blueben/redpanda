@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Useful directories
+mkdir $HOME/{.bin,src,Projects}
+
+# Copy my avatars to Pictures
+cp pictures/* $HOME/Pictures/
+
+# Set up blurred screensaver
+mkdir -p $HOME/{screensaver}
+cp scripts/blurcap.sh $HOME/.bin/
+crontab -l | { cat; echo "* * * * * $HOME/.bin/blurcap.sh"; } | crontab -
+
 # ~/.macos — https://mths.be/macos
 
 # Close any open System Preferences panes, to prevent them from overriding
