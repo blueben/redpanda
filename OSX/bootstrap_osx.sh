@@ -45,8 +45,8 @@ osascript -e 'tell application "System Preferences" to quit'
 # Ask for the administrator password upfront
 sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# Keep-alive: update existing `sudo` time stamp until script has finished
+while true; do sudo -n true; sleep 30; kill -0 "$$" || exit; done 2>/dev/null &
 
 
 ###############################################################################
@@ -56,17 +56,17 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 console 'Configuring system parameters'
 
-console 'Enable verbose boot' 'progress'
-sudo nvram boot-args="-v"
-
-console 'Enable the MacBook Air SuperDrive' 'progress'
-sudo nvram boot-args="mbasd=1"
+# These no longer work because of the System Integrity Protection system
+#console 'Enable verbose boot' 'progress'
+#sudo nvram boot-args="-v"
+#console 'Enable the MacBook Air SuperDrive' 'progress'
+#sudo nvram boot-args="mbasd=1"
 
 console 'Set computer name' 'progress'
-scutil --set ComputerName $HOSTNAME
-scutil --set HostName $HOSTNAME
-scutil --set LocalHostName $HOSTNAME
-defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string $HOSTNAME
+sudo scutil --set ComputerName $HOSTNAME
+sudo scutil --set HostName $HOSTNAME
+sudo scutil --set LocalHostName $HOSTNAME
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string $HOSTNAME
 
 # Set the timezone; see `sudo systemsetup -listtimezones` for other values
 console 'Set timezone' 'progress'
@@ -83,19 +83,18 @@ sudo systemsetup -setnetworktimeserver $NTP
 console 'Configuring the menu bar'
 
 console 'Hide unwanted menu icons' 'progress'
-for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
-	defaults write $domain dontAutoLoad -array \
-		"/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+defaults -currentHost write com.apple.systemuiserver dontAutoLoad -array \
+	"/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
     "/System/Library/CoreServices/Menu Extras/Volume.menu" \
+    "/System/Library/CoreServices/Menu Extras/Displays.menu" \
   	"/System/Library/CoreServices/Menu Extras/User.menu"
-done
 
 console 'Re-order menu icons' 'progress'
 defaults write com.apple.systemuiserver menuExtras -array \
+	"/System/Library/CoreServices/Menu Extras/Clock.menu" \
 	"/System/Library/CoreServices/Menu Extras/AirPort.menu" \
 	"/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
-  "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-	"/System/Library/CoreServices/Menu Extras/Clock.menu"
+	"/System/Library/CoreServices/Menu Extras/Battery.menu"
 
 console 'Configure the battery icon' 'progress'
 defaults write com.apple.menuextra.battery ShowPercent -string "No"
@@ -158,10 +157,10 @@ killall -HUP SystemUIServer
 ###############################################################################
 
 
-if test ! $(fdesetup status|grep On); then
+if test ! $(sudo fdesetup status|grep On); then
 	console 'Enabling Full Disk Encryption'
-	fdesetup enable -defer $HOME/Documents/FileVaultRecovery.plist
-	defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool YES
+	sudo fdesetup enable -defer $HOME/Documents/FileVaultRecovery.plist
+	sudo defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool YES
 fi
 
 
@@ -170,11 +169,9 @@ fi
 ###############################################################################
 
 
-if test ! $(xcode-select -p); then
-	console 'Installing xcode'
-	sudo xcode-select --install
-	sudo xcodebuild -license accept
-fi
+console 'Installing xcode'
+sudo xcode-select --install
+sudo xcodebuild -license accept
 
 
 ###############################################################################
@@ -187,6 +184,7 @@ if test ! $(which brew); then
 
 	console 'Install brew' 'progress'
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	rehash
 
 	console 'Update brew' 'progress'
 	brew update
@@ -195,16 +193,19 @@ if test ! $(which brew); then
 	brew install mas
 
 	console 'Run brew bundle' 'progress'
-	brew bundle
+	brew bundle -v
 
 	console 'Link apps' 'progress'
 	brew linkapps r-gui
 	brew link curl --force
 
-	if [ $PERSONAL == 'true']; then
+	if [ $PERSONAL == 'true' ]; then
 		console 'Install additional apps for personal use' 'progress'
 		brew bundle --file=Brewfile.home
 	fi
+
+	console 'Writing Brewfile'
+	brew dump --file=$HOME/.Brewfile
 
 	console 'Brew cleanup'
 	brew cleanup
@@ -233,11 +234,10 @@ console 'Enable stealth mode' 'progress'
 $socketfilterfw --setstealthmode on
 console 'Enable logging' 'progress'
 $socketfilterfw --setloggingmode on
-$socketfilterfw --setloggingopt: brief
+$socketfilterfw --setloggingopt brief
 
 for app in ${allow_apps[@]}; do
-	npm list -g --depth=0 | grep -w $1 > /dev/null 2>&1
-	if [ $? == 1 ]; then
+	if [ -f $app ]; then
 		console "Allow $app" 'progress'
 		$socketfilterfw -s $app
 		$socketfilterfw --add $app
@@ -253,7 +253,6 @@ console 'Configuring input options'
 
 console 'enable tap to click for this user and for the login screen' 'progress'
 defaults write com.apple.driver.AppleMultitouchTrackpad Clicking -int 1
-GlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
@@ -302,7 +301,7 @@ console 'Enable subpixel font rendering on non-Apple LCDs' 'progress'
 defaults write NSGlobalDomain AppleFontSmoothing -int 2
 
 console 'Enable HiDPI display modes (requires restart)' 'progress'
-defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 
 
 ###############################################################################
@@ -408,18 +407,18 @@ defaults write com.apple.dock wvous-bl-modifier -int 0
 
 console 'Configuring Docks and Spaces'
 
-# Don’t automatically rearrange Spaces based on most recent use
+console 'Don’t automatically rearrange Spaces based on most recent use' 'progress'
 defaults write com.apple.dock mru-spaces -bool false
 
-# Remove the auto-hiding Dock delay
+console 'Remove the auto-hiding Dock delay' 'progress'
 defaults write com.apple.dock autohide-delay -float 0.1
-# Remove the animation when hiding/showing the Dock
+#console 'Remove the animation when hiding/showing the Dock' 'progress'
 #defaults write com.apple.dock autohide-time-modifier -float 0
 
-# Automatically hide and show the Dock
+console 'Automatically hide and show the Dock' 'progress'
 defaults write com.apple.dock autohide -bool true
 
-# Make Dock icons of hidden applications translucent
+console 'Make Dock icons of hidden applications translucent' 'progress'
 defaults write com.apple.dock showhidden -bool true
 
 killall -HUP Dock
@@ -619,8 +618,6 @@ console 'Sort Activity Monitor results by CPU usage' 'progress'
 defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
 defaults write com.apple.ActivityMonitor SortDirection -int 0
 
-killall -HUP 'Activity Monitor'
-
 
 ###############################################################################
 # Address Book, Dashboard, iCal, TextEdit, and Disk Utility
@@ -630,14 +627,12 @@ console 'Configuring Address Book, Dashboard, iCal, TextEdit, and Disk Utility'
 
 console 'Enable the debug menu in Address Book' 'progress'
 defaults write com.apple.addressbook ABShowDebugMenu -bool true
-killall -HUP 'Address Book'
 
 console 'Enable Dashboard dev mode (allows keeping widgets on the desktop)' 'progress'
 defaults write com.apple.dashboard devmode -bool true
 
 console 'Enable the debug menu in iCal (pre-10.8)' 'progress'
 defaults write com.apple.iCal IncludeDebugMenu -bool true
-killall -HUP Calendar
 
 console 'Use plain text mode for new TextEdit documents' 'progress'
 defaults write com.apple.TextEdit RichText -int 0
@@ -709,9 +704,6 @@ console 'Expand the print dialog by default' 'progress'
 defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
 
-killall -HUP 'Google Chrome'
-killall -HUP 'Google Chrome Canary'
-
 
 ###############################################################################
 # GPGMail 2
@@ -751,8 +743,6 @@ defaults write org.m0k.transmission BlocklistNew -bool true
 defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
 defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
 
-killall -HUP transmission
-
 
 ###############################################################################
 # Spectacle.app                                                               #
@@ -784,8 +774,6 @@ console 'Configuring Spectacle App'
 #defaults write com.divisiblebyzero.Spectacle RedoLastMove -data 62706c6973743030d40102030405061a1b582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c617373110b008002100680035c5265646f4c6173744d6f7665d2131415165a24636c6173736e616d655824636c61737365735d5a65726f4b6974486f744b6579a31718195d5a65726f4b6974486f744b6579585a4b486f744b6579584e534f626a6563745f100f4e534b657965644172636869766572d11c1d54726f6f74800108111a232d32373c424b555a62696c6e70727f848f98a6aab8c1cadcdfe40000000000000101000000000000001e000000000000000000000000000000e6
 #defaults write com.divisiblebyzero.Spectacle UndoLastMove -data 62706c6973743030d40102030405061a1b582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731109008002100680035c556e646f4c6173744d6f7665d2131415165a24636c6173736e616d655824636c61737365735d5a65726f4b6974486f744b6579a31718195d5a65726f4b6974486f744b6579585a4b486f744b6579584e534f626a6563745f100f4e534b657965644172636869766572d11c1d54726f6f74800108111a232d32373c424b555a62696c6e70727f848f98a6aab8c1cadcdfe40000000000000101000000000000001e000000000000000000000000000000e6
 
-killall -HUP spectacle
-
 
 ###############################################################################
 # Photos
@@ -795,8 +783,6 @@ console 'Configuring Photos app'
 
 console 'Prevent Photos from opening automatically when devices are plugged in' 'progress'
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
-
-killall -HUP Photos
 
 
 ###############################################################################
@@ -849,6 +835,8 @@ do
 	killall -HUP "${app}" > /dev/null 2>&1
 done
 
-console 'Done.' 'success'
-console 'Note that some of these changes require a logout/restart to take effect.' 'success'
-console 'If you enabled Full Disk Encryption, put FileVaultRecovery.plist in a safe place' 'success'
+console 'Final Notes'
+console 'Some of these changes require a logout/restart to take effect.' 'warning'
+console 'If you enabled Full Disk Encryption, put FileVaultRecovery.plist in a safe place' 'warning'
+
+console '\nDone.' 'success'
