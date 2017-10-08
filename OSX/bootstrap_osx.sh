@@ -805,14 +805,14 @@ done
 
 for dir in ${project_dirs[@]}; do
 	console "$HOME/Projects/$dir" 'progress'
-	mkdir -p $dir
+	mkdir -p $HOME/Projects/$dir
 done
 
 console 'Copying avatar photos to Pictures'
 cp -v pictures/* $HOME/Pictures/
 
 console 'Setting up blurring screensaver'
-mkdir -vp $HOME/{screensaver}
+mkdir -vp $HOME/Pictures/screensaver
 cp -v OSX/scripts/blurcap.sh $HOME/.bin/
 crontab -l | { cat; echo "* * * * * $HOME/.bin/blurcap.sh"; } | crontab -
 
