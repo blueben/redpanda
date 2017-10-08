@@ -833,7 +833,7 @@ dock_apps=(
 	"file:///Applications/iTerm.app/"
 )
 
-defaults write com.apple.dock persistent-apps -array ()
+defaults delete com.apple.dock persistent-apps
 for app in ${dock_apps[@]}; do
 	console "Adding $app" 'progress'
 	defaults write com.apple.dock persistent-apps -array-add \
