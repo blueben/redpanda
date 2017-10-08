@@ -22,19 +22,19 @@ reset=`tput sgr0`
 console() {
   case "$2" in
     error)
-      echo -e "${red}${1}${reset}"
+      echo "${red}${1}${reset}"
     ;;
     progress)
-      echo -e "- ${cyan}${1}${reset}"
+      echo "- ${cyan}${1}${reset}"
     ;;
     success)
-      echo -e "${green}${1}${reset}"
+      echo "${green}${1}${reset}"
     ;;
     warning)
-      echo -e "${yellow}${1}${reset}"
+      echo "${yellow}${1}${reset}"
     ;;
     *)
-      echo -e "\n${blue}${1}${reset}"
+      echo "\n${blue}${1}${reset}"
   esac
 }
 
@@ -87,18 +87,17 @@ defaults -currentHost write com.apple.systemuiserver dontAutoLoad -array \
 	"/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
     "/System/Library/CoreServices/Menu Extras/Volume.menu" \
     "/System/Library/CoreServices/Menu Extras/Displays.menu" \
+	"/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
   	"/System/Library/CoreServices/Menu Extras/User.menu"
 
 console 'Re-order menu icons' 'progress'
 defaults write com.apple.systemuiserver menuExtras -array \
-	"/System/Library/CoreServices/Menu Extras/Clock.menu" \
 	"/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-	"/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+	"/System/Library/CoreServices/Menu Extras/Clock.menu" \
 	"/System/Library/CoreServices/Menu Extras/Battery.menu"
 
 console 'Configure the battery icon' 'progress'
-defaults write com.apple.menuextra.battery ShowPercent -string "No"
-defaults write com.apple.menuextra.battery ShowTime -string "YES"
+defaults write com.apple.menuextra.battery ShowPercent -string "Yes"
 
 console 'Configure the clock' 'progress'
 defaults write com.apple.menuextra.clock "DateFormat" -string "MMM d hh:mm a"
@@ -580,9 +579,6 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
 console 'Don’t display the annoying prompt when quitting iTerm' 'progress'
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
-console 'Add iterm to the Dock' 'progress'
-defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/iTerm.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
 
 ###############################################################################
 # Time Machine
@@ -820,6 +816,37 @@ mkdir -vp $HOME/{screensaver}
 cp -v OSX/scripts/blurcap.sh $HOME/.bin/
 crontab -l | { cat; echo "* * * * * $HOME/.bin/blurcap.sh"; } | crontab -
 
+
+###############################################################################
+# Cleanup
+###############################################################################
+
+console 'Configuring the Dock'
+
+dock_apps=(
+	"file:///Applications/Self%20Service.app/"
+	"file:///Applications/Launchpad.app/"
+	"file:///Applications/Microsoft%20Outlook.app/"
+	"file:///Applications/Franz.app/"
+	"file:///Applications/Visual%20Studio%20Code.app/"
+	"file:///Applications/Google%20Chrome.app/"
+	"file:///Applications/iTerm.app/"
+)
+
+defaults write com.apple.dock persistent-apps -array ()
+for app in ${dock_apps[@]}; do
+	console "Adding $app" 'progress'
+	defaults write com.apple.dock persistent-apps -array-add \
+		{ \
+			"tile-data" = { \
+				"file-data" = { \
+					"_CFURLString" = $app; \
+					"_CFURLStringType" = 15; \
+				}; \
+			}; \
+			"tile-type" = "file-tile"; \
+		}
+done
 
 ###############################################################################
 # Cleanup
