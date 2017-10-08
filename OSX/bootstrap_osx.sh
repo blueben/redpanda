@@ -184,7 +184,6 @@ if test ! $(which brew); then
 
 	console 'Install brew' 'progress'
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	rehash
 
 	console 'Update brew' 'progress'
 	brew update
@@ -193,15 +192,14 @@ if test ! $(which brew); then
 	brew install mas
 
 	console 'Run brew bundle' 'progress'
-	brew bundle -v
+	brew bundle -v --file=OSX/Brewfile
 
 	console 'Link apps' 'progress'
-	brew linkapps r-gui
 	brew link curl --force
 
-	if [ $PERSONAL == 'true' ]; then
+	if [ ! -z $PERSONAL ]; then
 		console 'Install additional apps for personal use' 'progress'
-		brew bundle --file=Brewfile.home
+		brew bundle -v --file=OSX/Brewfile.home
 	fi
 
 	console 'Writing Brewfile'
