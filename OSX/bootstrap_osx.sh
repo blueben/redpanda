@@ -841,6 +841,9 @@ defaults delete com.apple.dock persistent-apps
 #		"{ 'tile-data' = { 'file-data' = { '_CFURLString' = '${app}'; '_CFURLStringType' = 15; }; }; 'tile-type' = 'file-tile'; }"
 #done
 
+killall Dock
+
+
 ###############################################################################
 # Cleanup
 ###############################################################################
