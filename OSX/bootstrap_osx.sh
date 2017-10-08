@@ -837,7 +837,7 @@ defaults delete com.apple.dock persistent-apps
 for app in ${dock_apps[@]}; do
 	console "Adding $app" 'progress'
 	defaults write com.apple.dock persistent-apps -array-add \
-		"{ "tile-data" = { "file-data" = { "_CFURLString" = "${app}"; "_CFURLStringType" = 15; }; }; "tile-type" = "file-tile"; }"
+		"{ 'tile-data' = { 'file-data' = { '_CFURLString' = '${app}'; '_CFURLStringType' = 15; }; }; 'tile-type' = 'file-tile'; }"
 done
 
 ###############################################################################
