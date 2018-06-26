@@ -4,7 +4,7 @@
 # Setup script for the OS X environment
 ###############################################################################
 
-HOSTNAME='bkrueger'
+HOSTNAME='M00972571'
 NTP='time.nist.gov'
 TIMEZONE='America/Los_Angeles'
 
@@ -187,8 +187,20 @@ if test ! $(which brew); then
 	console 'Update brew' 'progress'
 	brew update
 
+  console 'Tap cask' 'progress'
+  brew tap caskroom/cask
+
+  console 'Tap versions cask' 'progress'
+  brew tap caskroom/versions
+
+  console 'Tap fonts cask' 'progress'
+  brew tap caskroom/versions
+
 	console 'Install mas' 'progress'
 	brew install mas
+
+	console 'Install Homebrew bundle' 'progress'
+	brew tap Homebrew/bundle
 
 	console 'Run brew bundle' 'progress'
 	brew bundle -v --file=OSX/Brewfile
@@ -202,15 +214,32 @@ if test ! $(which brew); then
 	fi
 
 	console 'Writing Brewfile'
-	brew dump --file=$HOME/.Brewfile
+	brew bundle dump --file=$HOME/.Brewfile
 
-	console 'Brew cleanup'
+	console 'Set up brewed Python packages' 'progress'
+	mkdir -p $HOME/Library/Python/2.7/lib/python/site-packages
+	echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> $HOME/Library/Python/2.7/lib/python/site-packages/homebrew.pth
+
+	console 'Brew cleanup' 'progress'
 	brew cleanup
 
-	console 'Brew cask cleanup'
+	console 'Brew cask cleanup' 'progress'
 	brew cask cleanup
 fi
 
+###############################################################################
+# Application setup
+###############################################################################
+
+consul 'Setting up LastPass' 'progress'
+open /usr/local/Caskroom/lastpass/latest/LastPass\ Installer/LastPass\ Installer.app
+
+consul 'Offlineimap' 'progress'
+echo "To have launchd start offlineimap now and restart at login:"
+echo "brew services start offlineimap"
+
+consul 'Install SF Mono font' 'progress'
+cp -v /Applications/Utilities/Terminal.app/Contents/Resources/Fonts/SFMono-* ~/Library/Fonts
 
 ###############################################################################
 # Firewall rules
@@ -805,14 +834,14 @@ done
 
 for dir in ${project_dirs[@]}; do
 	console "$HOME/Projects/$dir" 'progress'
-	mkdir -p $HOME/Projects/$dir
+	mkdir -p $dir
 done
 
 console 'Copying avatar photos to Pictures'
 cp -v pictures/* $HOME/Pictures/
 
 console 'Setting up blurring screensaver'
-mkdir -vp $HOME/Pictures/screensaver
+mkdir -vp $HOME/{screensaver}
 cp -v OSX/scripts/blurcap.sh $HOME/.bin/
 crontab -l | { cat; echo "* * * * * $HOME/.bin/blurcap.sh"; } | crontab -
 
@@ -840,9 +869,6 @@ defaults delete com.apple.dock persistent-apps
 #	defaults write com.apple.dock persistent-apps -array-add \
 #		"{ 'tile-data' = { 'file-data' = { '_CFURLString' = '${app}'; '_CFURLStringType' = 15; }; }; 'tile-type' = 'file-tile'; }"
 #done
-
-killall Dock
-
 
 ###############################################################################
 # Cleanup
